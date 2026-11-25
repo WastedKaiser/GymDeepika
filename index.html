@@ -1,0 +1,272 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover, user-scalable=no">
+<title>GymDeepika</title>
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="GymDeepika">
+<meta name="theme-color" content="#120d16">
+<link rel="apple-touch-icon" href="icons/apple-touch-icon.png">
+<link rel="icon" type="image/png" href="icons/icon-192.png">
+<link rel="manifest" href="manifest.webmanifest">
+<style>
+  :root{
+    --bg:#120d16; --card:#1e1724; --card2:#271e2e; --text:#fff; --muted:#b7a9c2;
+    --pink:#ff6fa5; --line:rgba(255,255,255,.08);
+    --safe-top:env(safe-area-inset-top); --safe-bot:env(safe-area-inset-bottom);
+  }
+  *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+  html,body{margin:0;background:var(--bg);color:var(--text);
+    font-family:-apple-system,BlinkMacSystemFont,"SF Pro Rounded","SF Pro Display",system-ui,sans-serif;
+    -webkit-font-smoothing:antialiased;overscroll-behavior-y:none}
+  body{padding:calc(var(--safe-top) + 12px) 16px calc(var(--safe-bot) + 100px)}
+  h1{font-size:34px;margin:8px 0 2px;letter-spacing:-.5px}
+  .hello{color:var(--muted);margin:0 0 20px;font-size:15px}
+  .grid{display:grid;gap:14px}
+  .day{position:relative;border:0;border-radius:24px;padding:20px;text-align:left;color:#1a0f1f;
+    min-height:118px;display:flex;flex-direction:column;justify-content:flex-end;overflow:hidden;
+    box-shadow:0 10px 30px rgba(0,0,0,.35);transition:transform .15s;font:inherit;width:100%}
+  .day:active{transform:scale(.97)}
+  .day .nr{position:absolute;top:16px;left:20px;font-size:13px;font-weight:700;opacity:.7;letter-spacing:.5px}
+  .day .emo{position:absolute;right:14px;top:8px;font-size:58px;opacity:.9}
+  .day .t{font-size:26px;font-weight:800;letter-spacing:-.3px}
+  .day .s{font-size:14px;font-weight:600;opacity:.75;margin-top:2px}
+  .day .done{position:absolute;right:16px;bottom:16px;background:rgba(255,255,255,.55);border-radius:20px;
+    padding:4px 10px;font-size:12px;font-weight:700}
+  .rules{margin-top:22px;background:var(--card);border-radius:20px;padding:16px 18px;font-size:14px;line-height:1.5;color:var(--muted)}
+  .rules b{color:var(--text)}
+
+  /* Day view */
+  .top{position:sticky;top:0;z-index:5;margin:calc(-1*(var(--safe-top) + 12px)) -16px 0;
+    padding:calc(var(--safe-top) + 10px) 16px 12px;background:rgba(18,13,22,.82);
+    -webkit-backdrop-filter:blur(18px);backdrop-filter:blur(18px);display:flex;align-items:center;gap:10px;border-bottom:1px solid var(--line)}
+  .back{border:0;background:var(--card2);color:var(--text);width:40px;height:40px;border-radius:50%;font-size:20px}
+  .top .tt{font-weight:800;font-size:19px}
+  .top .ts{font-size:12px;color:var(--muted)}
+  .hero{border-radius:24px;padding:22px 20px;margin:16px 0;color:#1a0f1f}
+  .hero .t{font-size:28px;font-weight:800}
+  .hero .s{font-weight:600;opacity:.75}
+  .hero .meta{margin-top:10px;font-size:13px;font-weight:700;display:flex;gap:8px;flex-wrap:wrap}
+  .hero .meta span{background:rgba(255,255,255,.5);padding:5px 10px;border-radius:20px}
+  details.warm{background:var(--card);border-radius:20px;padding:4px 18px;margin-bottom:14px}
+  details.warm summary{list-style:none;padding:14px 0;font-weight:700;display:flex;justify-content:space-between}
+  details.warm summary::-webkit-details-marker{display:none}
+  details.warm summary:after{content:"＋";color:var(--pink)}
+  details.warm[open] summary:after{content:"－"}
+  details.warm ol{margin:0 0 14px;padding-left:20px;color:var(--muted);line-height:1.6;font-size:14px}
+  .ex{background:var(--card);border-radius:22px;padding:18px;margin-bottom:14px}
+  .ex .head{display:flex;gap:12px;align-items:flex-start}
+  .ex .num{flex:none;width:34px;height:34px;border-radius:12px;display:grid;place-items:center;font-weight:800;color:#1a0f1f}
+  .ex .name{font-size:19px;font-weight:800;line-height:1.2}
+  .ex .mus{font-size:13px;color:var(--muted);margin-top:3px}
+  .tag{display:inline-block;font-size:11px;font-weight:700;padding:2px 8px;border-radius:10px;background:#3a2c44;color:#e8c6ff;margin-left:6px;vertical-align:middle}
+  .pill{display:inline-block;margin-top:12px;background:var(--card2);padding:6px 12px;border-radius:12px;font-weight:700;font-size:14px}
+  .ex ul{margin:12px 0 0;padding-left:18px;color:var(--muted);font-size:14px;line-height:1.5}
+  .warn{margin-top:10px;font-size:12px;color:#ffc58f}
+  .vid{margin-top:14px}
+  .vid video{width:100%;border-radius:16px;background:#000;display:block}
+  .btn{display:flex;align-items:center;justify-content:center;gap:8px;width:100%;border:0;border-radius:14px;
+    padding:13px;font:inherit;font-weight:700;font-size:15px;text-decoration:none;color:#1a0f1f;background:var(--pink)}
+  .btn.ghost{background:var(--card2);color:var(--text)}
+  .sets{margin-top:14px;display:grid;gap:8px}
+  .set{display:grid;grid-template-columns:62px 1fr 1fr 44px;gap:8px;align-items:center}
+  .set .lbl{font-size:13px;font-weight:700;color:var(--muted)}
+  .set input{width:100%;background:var(--card2);border:1px solid var(--line);color:var(--text);border-radius:12px;
+    padding:11px 10px;font:inherit;font-size:16px;text-align:center}
+  .set input::placeholder{color:#7d6f88}
+  .chk{border:0;height:44px;border-radius:12px;background:var(--card2);color:var(--muted);font-size:18px}
+  .chk.on{background:#4cd98a;color:#0d2a19}
+  .last{font-size:12px;color:var(--muted);margin-top:6px}
+  .timer{position:fixed;left:16px;right:16px;bottom:calc(var(--safe-bot) + 14px);z-index:20;display:flex;gap:8px;
+    background:rgba(39,30,46,.9);-webkit-backdrop-filter:blur(18px);backdrop-filter:blur(18px);
+    border-radius:20px;padding:8px;border:1px solid var(--line)}
+  .timer button{flex:1;border:0;border-radius:14px;padding:12px 0;font:inherit;font-weight:800;background:var(--card);color:var(--text)}
+  .timer .clock{flex:1.4;background:var(--pink);color:#1a0f1f}
+  .foot{color:#6e6278;font-size:12px;text-align:center;margin-top:20px}
+</style>
+</head>
+<body>
+<div id="app"></div>
+
+<script src="data.js"></script>
+<script>
+const $ = (s, el=document) => el.querySelector(s);
+const store = {
+  get(k, d){ try{ return JSON.parse(localStorage.getItem(k)) ?? d }catch(e){ return d } },
+  set(k, v){ try{ localStorage.setItem(k, JSON.stringify(v)) }catch(e){} }
+};
+const grad = c => `linear-gradient(135deg, ${c[0]}, ${c[1]})`;
+const esc = s => String(s).replace(/[&<>"]/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+const today = () => new Date().toISOString().slice(0,10);
+const mwLink = term => "https://www.google.com/search?q=" + encodeURIComponent("site:musclewiki.com female " + term);
+
+function greeting(){
+  const h = new Date().getHours();
+  return h < 11 ? "Guten Morgen" : h < 18 ? "Hey" : "Guten Abend";
+}
+
+function renderHome(){
+  const done = store.get("done", {});
+  document.title = "GymDeepika";
+  $("#app").innerHTML = `
+    <h1>GymDeepika 💖</h1>
+    <p class="hello">${greeting()} Deepika – welcher Tag ist heute?</p>
+    <div class="grid">
+      ${DAYS.map(d => `
+        <button class="day" style="background:${grad(d.color)}" onclick="location.hash='${d.id}'">
+          <span class="nr">TAG ${d.nr}</span>
+          <span class="emo">${d.emoji}</span>
+          <span class="t">${esc(d.title)}</span>
+          <span class="s">${esc(d.subtitle)} · ${d.exercises.length} Übungen</span>
+          ${done[d.id] ? `<span class="done">✓ ${fmtDate(done[d.id])}</span>` : ""}
+        </button>`).join("")}
+    </div>
+    <div class="rules">
+      <b>So geht's:</b> Erst aufwärmen, dann pro Übung <b>2 Sätze × 6–8 Wdh.</b> schwer bis zum Muskelversagen.
+      2–3 Min. Pause. Schaffst du in beiden Sätzen 8 saubere Wdh. → nächstes Mal mehr Gewicht.
+    </div>
+    <p class="foot">Videos & Technik: musclewiki.com</p>`;
+  window.scrollTo(0,0);
+}
+
+function fmtDate(iso){
+  const [y,m,d] = iso.split("-"); return `${d}.${m}.`;
+}
+
+function renderDay(day){
+  const logs = store.get("logs", {});
+  const warm = WARMUP[day.warmup];
+  document.title = day.title + " · GymDeepika";
+  $("#app").innerHTML = `
+    <div class="top">
+      <button class="back" onclick="location.hash=''" aria-label="Zurück">‹</button>
+      <div><div class="tt">Tag ${day.nr} · ${esc(day.title)}</div><div class="ts">${esc(day.subtitle)}</div></div>
+    </div>
+    <div class="hero" style="background:${grad(day.color)}">
+      <div class="t">${day.emoji} ${esc(day.title)}</div>
+      <div class="s">${esc(day.subtitle)}</div>
+      <div class="meta"><span>${day.exercises.length} Übungen</span><span>2 Sätze</span><span>6–8 Wdh.</span><span>bis Versagen</span></div>
+    </div>
+    <details class="warm" open>
+      <summary>🔥 Aufwärmen (~10 Min.)</summary>
+      <ol>${warm.map(w => `<li>${esc(w)}</li>`).join("")}</ol>
+    </details>
+    ${day.exercises.map((ex, i) => exerciseCard(day, ex, i, logs)).join("")}
+    <button class="btn" style="margin-top:6px" onclick="finishDay('${day.id}')">✓ Training abgeschlossen</button>
+    <div class="timer">
+      <button onclick="startTimer(120)">2:00</button>
+      <button class="clock" id="clock" onclick="stopTimer()">Pause-Timer</button>
+      <button onclick="startTimer(180)">3:00</button>
+    </div>`;
+  window.scrollTo(0,0);
+}
+
+function exerciseCard(day, ex, i, logs){
+  const key = day.id + ":" + i;
+  const cur = logs[key] || {};
+  const isToday = cur.date === today();
+  const last = (isToday ? cur.prev : cur) || {};
+  const sets = [0,1].map(s => {
+    const l = (last.sets || [])[s] || {};
+    const c = isToday ? (cur.sets[s] || {}) : {};
+    return `
+      <div class="set">
+        <span class="lbl">Satz ${s+1}</span>
+        <input inputmode="decimal" placeholder="${l.kg ? l.kg : "kg"}" value="${c.kg || ""}" data-k="${key}" data-s="${s}" data-f="kg" onchange="saveSet(this)">
+        <input inputmode="numeric" placeholder="${l.reps ? l.reps : "Wdh."}" value="${c.reps || ""}" data-k="${key}" data-s="${s}" data-f="reps" onchange="saveSet(this)">
+        <button class="chk ${c.done ? "on" : ""}" data-k="${key}" data-s="${s}" onclick="toggleDone(this)">✓</button>
+      </div>`;
+  }).join("");
+  const lastTxt = last.date && last.sets
+    ? `<div class="last">Letztes Mal (${fmtDate(last.date)}): ${last.sets.map(s => s && s.kg ? `${s.kg} kg × ${s.reps||"?"}` : "–").join(" · ")}</div>` : "";
+  const media = ex.video
+    ? `<video src="${esc(ex.video)}" playsinline muted loop autoplay preload="metadata"></video>`
+    : `<a class="btn ghost" href="${mwLink(ex.mw || ex.name)}" target="_blank" rel="noopener">▶︎ Video auf MuscleWiki ansehen</a>`;
+  return `
+    <section class="ex">
+      <div class="head">
+        <div class="num" style="background:${grad(day.color)}">${i+1}</div>
+        <div>
+          <div class="name">${esc(ex.name)}${ex.isNew ? '<span class="tag">NEU</span>' : ""}</div>
+          <div class="mus">${esc(ex.muscle)}</div>
+        </div>
+      </div>
+      <span class="pill">2 × 6–8 Wdh.${ex.perSide ? " pro Bein" : ""}</span>
+      <ul>${ex.tips.map(t => `<li>${esc(t)}</li>`).join("")}</ul>
+      ${ex.safe ? `<div class="warn">⚠️ Hier lieber 1 Wdh. vor dem Versagen stoppen, sobald die Technik bricht.</div>` : ""}
+      <div class="vid">${media}</div>
+      <div class="sets">${sets}</div>
+      ${lastTxt}
+    </section>`;
+}
+
+function getEntry(key){
+  const logs = store.get("logs", {});
+  let e = logs[key];
+  if(!e || e.date !== today()){
+    const prev = e && e.date ? { date: e.date, sets: e.sets } : undefined;
+    e = { date: today(), sets: [{}, {}], prev };
+  }
+  return [logs, e];
+}
+function saveSet(inp){
+  const {k, s, f} = inp.dataset;
+  const [logs, e] = getEntry(k);
+  e.sets[s] = e.sets[s] || {};
+  e.sets[s][f] = inp.value.replace(",", ".");
+  logs[k] = e; store.set("logs", logs);
+}
+function toggleDone(btn){
+  const {k, s} = btn.dataset;
+  const [logs, e] = getEntry(k);
+  e.sets[s] = e.sets[s] || {};
+  // leere Felder mit letztem Wert (Placeholder) füllen
+  btn.parentElement.querySelectorAll("input").forEach(inp => {
+    if(!inp.value && !isNaN(parseFloat(inp.placeholder))) { inp.value = inp.placeholder; }
+    if(inp.value) e.sets[s][inp.dataset.f] = inp.value.replace(",", ".");
+  });
+  e.sets[s].done = !e.sets[s].done;
+  btn.classList.toggle("on", e.sets[s].done);
+  logs[k] = e; store.set("logs", logs);
+  if(e.sets[s].done) startTimer(120);
+}
+function finishDay(id){
+  const done = store.get("done", {}); done[id] = today(); store.set("done", done);
+  if(navigator.vibrate) navigator.vibrate(80);
+  location.hash = "";
+}
+
+let tId = null, tEnd = 0;
+function startTimer(sec){
+  stopTimer(true);
+  tEnd = Date.now() + sec*1000;
+  tick(); tId = setInterval(tick, 250);
+}
+function tick(){
+  const c = $("#clock"); if(!c){ stopTimer(true); return; }
+  const left = Math.max(0, Math.round((tEnd - Date.now())/1000));
+  c.textContent = `${Math.floor(left/60)}:${String(left%60).padStart(2,"0")}  ✕`;
+  if(left === 0){ c.textContent = "Los geht's! 💪"; clearInterval(tId); tId = null; if(navigator.vibrate) navigator.vibrate([200,100,200]); }
+}
+function stopTimer(silent){
+  if(tId) clearInterval(tId); tId = null;
+  const c = $("#clock"); if(c && !silent) c.textContent = "Pause-Timer";
+}
+
+function route(){
+  stopTimer(true);
+  const day = DAYS.find(d => d.id === location.hash.slice(1));
+  day ? renderDay(day) : renderHome();
+}
+window.addEventListener("hashchange", route);
+route();
+
+if("serviceWorker" in navigator){
+  navigator.serviceWorker.register("sw.js").catch(()=>{});
+}
+</script>
+</body>
+</html>
